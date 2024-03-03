@@ -46,7 +46,10 @@ def TestPing(target, mode=ScanMode.Normal) -> list:
     if isinstance(target, list):
         target = " ".join(target)
     if mode == ScanMode.Evade and is_root():
-        nm.scan(hosts=target, arguments="-sn -T 2 -f -g 53 --data-length 10")
+        nm.scan(
+            hosts=target,
+            arguments="-sn -T 2 -f -g 53 --data-length 10"
+        )
     else:
         nm.scan(hosts=target, arguments="-sn")
 
@@ -59,7 +62,10 @@ def TestArp(target, mode=ScanMode.Normal) -> list:
     if isinstance(target, list):
         target = " ".join(target)
     if mode == ScanMode.Evade:
-        nm.scan(hosts=target, arguments="-sn -PR -T 2 -f -g 53 --data-length 10")
+        nm.scan(
+            hosts=target,
+            arguments="-sn -PR -T 2 -f -g 53 --data-length 10"
+        )
     else:
         nm.scan(hosts=target, arguments="-sn -PR")
 
@@ -131,7 +137,7 @@ def PortScan(
                         str(scanspeed),
                         customflags,
                     ]
-                ),
+                )
             )
     except Exception as e:
         raise SystemExit(f"Error: {e}")
@@ -153,7 +159,13 @@ def CreateNoise(target) -> None:
             break
 
 
-def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) -> None:
+def NoiseScan(
+        target,
+        log,
+        console,
+        scantype=ScanType.ARP,
+        noisetimeout=None
+    ) -> None:
     banner("Creating noise...", "green", console)
 
     Uphosts = TestPing(target)
@@ -165,7 +177,9 @@ def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) ->
         with console.status("Creating noise ...", spinner="line"):
             NoisyProcesses = []
             for host in Uphosts:
-                log.logger("info", f"Started creating noise on {host}...")
+                log.logger(
+                    "info", f"Started creating noise on {host}..."
+                )
                 P = Process(target=CreateNoise, args=(host,))
                 NoisyProcesses.append(P)
                 P.start()
@@ -184,15 +198,30 @@ def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) ->
         raise SystemExit
 
 
-def DiscoverHosts(target, console, scantype=ScanType.ARP, mode=ScanMode.Normal) -> list:
+def DiscoverHosts(
+        target,
+        console,
+        scantype=ScanType.ARP,
+        mode=ScanMode.Normal
+    ) -> list:
     if isinstance(target, list):
         banner(
-            f"Scanning {len(target)} target(s) using {scantype.name} scan ...",
+            (
+                f"Scanning {len(target)} target(s)"
+                f" using {scantype.name} scan ..."
+            ),
             "green",
-            console,
+            console
         )
     else:
-        banner(f"Scanning {target} using {scantype.name} scan ...", "green", console)
+        banner(
+            (
+                f"Scanning {target} using"
+                f"{scantype.name} scan ..."
+            ),
+            "green",
+            console
+        )
 
     if scantype == ScanType.ARP:
         OnlineHosts = TestArp(target, mode)
@@ -275,18 +304,26 @@ def AnalyseScanResults(nm, log, console, target=None) -> list:
     CurrentTargetInfo = InitHostInfo(nm[target])
 
     if is_root():
-        if nm[target]["status"]["reason"] in ["localhost-response", "user-set"]:
+        if (
+                nm[target]["status"]["reason"] in
+                ["localhost-response", "user-set"]
+            ):
             log.logger("info", f"Target {target} seems to be us.")
     elif GetIpAdress() == target:
         log.logger("info", f"Target {target} seems to be us.")
 
     if len(nm[target].all_tcp()) == 0:
-        log.logger("warning", f"Target {target} seems to have no open ports.")
+        log.logger(
+            "warning", f"Target {target} seems to have no open ports."
+        )
         return HostArray
 
     banner(f"Portscan results for {target}", "green", console)
 
-    if not CurrentTargetInfo.mac == "Unknown" and not CurrentTargetInfo.os == "Unknown":
+    if (
+        not CurrentTargetInfo.mac == "Unknown"
+        and not CurrentTargetInfo.os == "Unknown"
+        ):
         console.print(CurrentTargetInfo.colored(), justify="center")
 
     table = Table(box=box.MINIMAL)
@@ -298,11 +335,31 @@ def AnalyseScanResults(nm, log, console, target=None) -> list:
     table.add_column("Version", style="purple")
 
     for port in nm[target]["tcp"].keys():
-        state, service, product, version = InitPortInfo(nm[target]["tcp"][port])
-        table.add_row(str(port), state, service, product, version)
+        (
+            state,
+            service,
+            product,
+            version
+        ) = InitPortInfo(nm[target]["tcp"][port])
+        table.add_row(
+            str(port),
+            state,
+            service,
+            product,
+            version
+        )
 
         if state == "open":
-            HostArray.insert(len(HostArray), [target, port, service, product, version])
+            HostArray.insert(
+                len(HostArray),
+                [
+                    target,
+                    port,
+                    service,
+                    product,
+                    version
+                ]
+            )
 
     console.print(table, justify="center")
 

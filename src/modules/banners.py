@@ -2,7 +2,7 @@ from rich.align import Align
 from rich.panel import Panel
 from rich.text import Text
 
-from modules.utils import get_terminal_width
+from src.modules.utils import get_terminal_width
 
 
 # https://patorjk.com/software/taag/
@@ -19,7 +19,7 @@ ___           __          ____  _       __ _   __   _____         _  __
 
     banner_small = """\
 ╔═╗┬ ┬┌┬┐┌─┐╔═╗╦ ╦╔╗╔  ╔═╗┬ ┬┬┌┬┐┌─┐
-╠═╣│ │ │ │ │╠═╝║║║║║║  ╚═╗│ ││ │ ├┤ 
+╠═╣│ │ │ │ │╠═╝║║║║║║  ╚═╗│ ││ │ ├┤
 ╩ ╩└─┘ ┴ └─┘╩  ╚╩╝╝╚╝  ╚═╝└─┘┴ ┴ └─┘
 """
 

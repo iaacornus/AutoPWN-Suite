@@ -47,12 +47,28 @@ def InitializeEmailReport(EmailObj, log, console) -> None:
 
     log.logger("info", "Sending email report...")
 
-    SendEmail(email, password, email_to, email_from, server, port, log)
+    SendEmail(
+        email,
+        password,
+        email_to,
+        email_from,
+        server,
+        port,
+        log
+    )
 
     remove("tmp_report.html")
 
 
-def SendEmail(email, password, email_to, email_from, server, port, log) -> None:
+def SendEmail(
+        email,
+        password,
+        email_to,
+        email_from,
+        server,
+        port,
+        log
+    ) -> None:
     """
     Send email report.
     """

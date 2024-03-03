@@ -30,16 +30,34 @@ from src.modules.web.webvuln import webvuln
 
 
 def StartScanning(
-    args, targetarg, scantype, scanmode, apiKey, console, console2, log
-) -> None:
+        args,
+        targetarg,
+        scantype,
+        scanmode,
+        apikey,
+        console,
+        console2,
+        log
+    ) -> None:
 
     check_nmap(log)
 
     if scanmode == ScanMode.Noise:
-        NoiseScan(targetarg, log, console, scantype, args.noise_timeout)
+        NoiseScan(
+            targetarg,
+            log,
+            console,
+            scantype,
+            args.noise_timeout
+        )
 
     if not args.skip_discovery:
-        hosts = DiscoverHosts(targetarg, console, scantype, scanmode)
+        hosts = DiscoverHosts(
+                targetarg,
+                console,
+                scantype,
+                scanmode
+            )
         Targets = GetHostsToScan(hosts, console)
     else:
         Targets = [targetarg]
@@ -50,13 +68,24 @@ def StartScanning(
     for host in Targets:
         if ScanPorts:
             PortScanResults = PortScan(
-                host, log, args.speed, args.host_timeout, scanmode, args.nmap_flags
-            )
-            PortArray = AnalyseScanResults(PortScanResults, log, console, host)
+                    host,
+                    log,
+                    args.speed,
+                    args.host_timeout,
+                    scanmode,
+                    args.nmap_flags
+                )
+            PortArray = AnalyseScanResults(
+                    PortScanResults, log, console, host
+                )
             if ScanVulns and len(PortArray) > 0:
-                VulnsArray = SearchSploits(PortArray, log, console, console2, apiKey)
+                VulnsArray = SearchSploits(
+                        PortArray, log, console, console2, apikey
+                    )
                 if DownloadExploits and len(VulnsArray) > 0:
-                    GetExploitsFromArray(VulnsArray, log, console, console2, host)
+                    GetExploitsFromArray(
+                        VulnsArray, log, console, console2, host
+                    )
 
         if ScanWeb:
             webvuln(host, log, console)
@@ -95,15 +124,36 @@ def main() -> None:
     targetarg = InitArgsTarget(args, log)
     scantype = InitArgsScanType(args, log)
     scanmode = InitArgsMode(args, log)
-    apiKey = InitArgsAPI(args, log)
+    apikey = InitArgsAPI(args, log)
     ReportMethod, ReportObject = InitReport(args, log)
 
-    ParamPrint(args, targetarg, scantype, scanmode, apiKey, console, log)
+    ParamPrint(
+        args,
+        targetarg,
+        scantype,
+        scanmode,
+        apikey,
+        console,
+        log
+    )
 
-    StartScanning(args, targetarg, scantype, scanmode, apiKey, console, console2, log)
+    StartScanning(
+        args,
+        targetarg,
+        scantype,
+        scanmode,
+        apikey,
+        console,
+        console2,
+        log
+    )
 
-    InitializeReport(ReportMethod, ReportObject, log, console)
-    SaveOutput(console, args.output_type, args.report, args.output)
+    InitializeReport(
+        ReportMethod, ReportObject, log, console
+    )
+    SaveOutput(
+        console, args.output_type, args.report, args.output
+    )
 
 
 if __name__ == "__main__":

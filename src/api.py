@@ -7,7 +7,15 @@ from src.modules.nist_search import searchCVE
 from src.modules.searchvuln import GenerateKeyword
 from src.modules.utils import fake_logger, is_root
 
-JSON = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]
+JSON = Union[
+        Dict[str, Any],
+        List[Any],
+        int,
+        str,
+        float,
+        bool,
+        Type[None]
+    ]
 
 
 class AutoScanner:
@@ -80,12 +88,16 @@ class AutoScanner:
             scan_args.append("-T")
             scan_args.append(str(scan_speed))
         elif scan_speed and not scan_speed in range(0, 6):
-            raise Exception("Scanspeed must be in range of 0, 5.")
+            raise Exception(
+                "Scanspeed must be in range of 0, 5."
+            )
 
         if is_root() and os_scan:
             scan_args.append("-O")
         elif os_scan:
-            raise Exception("Root privileges are required for os scan.")
+            raise Exception(
+                "Root privileges are required for os scan."
+            )
 
         if type(nmap_args) == list:
             for arg in nmap_args:
@@ -98,8 +110,11 @@ class AutoScanner:
         return scan_arguments
 
     def SearchVuln(
-        self, port_key: JSON, apiKey: str = None, debug: bool = False
-    ) -> JSON:
+            self,
+            port_key: JSON,
+            apiKey: str = None,
+            debug: bool = False
+        ) -> JSON:
         product = port_key["product"]
         version = port_key["version"]
         log = fake_logger()
@@ -122,16 +137,16 @@ class AutoScanner:
         return vulns
 
     def scan(
-        self,
-        target,
-        host_timeout: int = None,
-        scan_speed: int = None,
-        apiKey: str = None,
-        os_scan: bool = False,
-        scan_vulns: bool = True,
-        nmap_args=None,
-        debug: bool = False,
-    ) -> JSON:
+            self,
+            target,
+            host_timeout: int = None,
+            scan_speed: int = None,
+            apiKey: str = None,
+            os_scan: bool = False,
+            scan_vulns: bool = True,
+            nmap_args=None,
+            debug: bool = False,
+        ) -> JSON:
         if type(target) == str:
             target = [target]
 
@@ -163,7 +178,9 @@ class AutoScanner:
             vulns = {}
             for port in nm[host]["tcp"]:
                 product = nm[host]["tcp"][port]["product"]
-                Vulnerablities = self.SearchVuln(nm[host]["tcp"][port], apiKey, debug)
+                Vulnerablities = self.SearchVuln(
+                        nm[host]["tcp"][port], apiKey, debug
+                    )
                 if Vulnerablities:
                     vulns[product] = Vulnerablities
 

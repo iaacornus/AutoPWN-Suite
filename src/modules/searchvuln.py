@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from textwrap import wrap
 
-from modules.logger import banner
-from modules.nist_search import searchCVE
-from modules.utils import CheckConnection, get_terminal_width
-from rich.progress_bar import ProgressBar
+from src.modules.logger import banner
+from src.modules.nist_search import searchCVE
+from src.modules.utils import CheckConnection, get_terminal_width
 
 
 @dataclass
@@ -70,7 +69,13 @@ def SearchKeyword(keyword: str, log, apiKey=None) -> list:
     return []
 
 
-def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
+def SearchSploits(
+        HostArray: list,
+        log,
+        console,
+        console2,
+        apiKey=None
+    ) -> list:
     VulnsArray = []
     target = str(HostArray[0][0])
     term_width = get_terminal_width()
@@ -81,16 +86,23 @@ def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
     keywords = GenerateKeywords(HostArray)
 
     if len(keywords) == 0:
-        log.logger("warning", f"Insufficient information for {target}")
+        log.logger(
+            "warning", f"Insufficient information for {target}"
+        )
         return []
 
     log.logger(
-        "info", f"Searching vulnerability database for {len(keywords)} keyword(s) ..."
+        "info",
+        (
+            "Searching vulnerability database "
+            f"for {len(keywords)} keyword(s) ..."
+        )
     )
 
     printed_banner = False
     with console2.status(
-        "[white]Searching vulnerabilities ...[/white]", spinner="bouncingBar"
+        "[white]Searching vulnerabilities ...[/white]",
+        spinner="bouncingBar"
     ) as status:
         for keyword in keywords:
             status.start()
