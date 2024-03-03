@@ -40,6 +40,7 @@ def StartScanning(
         log
     ) -> None:
 
+
     check_nmap(log)
 
     if scanmode == ScanMode.Noise:
@@ -102,12 +103,14 @@ def main() -> None:
     __version__ = "2.1.5"
 
     args = cli()
+
+    console = Console(record=True, color_system="truecolor")
+    console2 = Console(record=False, color_system="truecolor")
+
     if args.no_color:
         console = Console(record=True, color_system=None)
         console2 = Console(record=False, color_system=None)
-    else:
-        console = Console(record=True, color_system="truecolor")
-        console2 = Console(record=False, color_system="truecolor")
+
     log = Logger(console)
 
     if args.version:
