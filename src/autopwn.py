@@ -163,7 +163,7 @@ def scan(args, version):
 
 
 def main() -> None:
-    __author__ = "GamehunterKaan"
+    # __author__ = "GamehunterKaan"
     __version__ = "2.1.5"
 
     args = cli()
@@ -177,5 +177,5 @@ def main() -> None:
 if __name__ == "__main__":
     try:
         main()
-    except KeyboardInterrupt:
-        raise SystemExit("Ctrl+C pressed. Exiting.")
+    except KeyboardInterrupt as err:
+        raise SystemExit("Ctrl+C pressed. Exiting.") from err
