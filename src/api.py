@@ -100,10 +100,10 @@ class AutoScanner:
                 "Root privileges are required for OS scan."
             )
 
-        if type(nmap_args) == list:
+        if isinstance(nmap_args, list):
             for arg in nmap_args:
                 scan_args.append(arg)
-        elif type(nmap_args) == str:
+        elif isinstance(nmap_args, str):
             scan_args.append(nmap_args)
 
         scan_arguments = " ".join(scan_args)
@@ -148,7 +148,7 @@ class AutoScanner:
             nmap_args=None,
             debug: bool = False,
         ) -> JSON:
-        if type(target) == str:
+        if isinstance(target, str):
             target = [target]
 
         nm = PortScanner()
