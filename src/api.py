@@ -189,6 +189,6 @@ class AutoScanner:
         return self.scan_results
 
     def save_to_file(self: Self, filename: str = "autopwn.json") -> None:
-        with open(filename, "w") as output:
+        with open(filename, "w", encoding="utf-8") as output:
             json_object = dumps(self.scan_results)
             output.write(json_object)
