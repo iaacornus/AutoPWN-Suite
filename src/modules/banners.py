@@ -1,3 +1,4 @@
+from rich.console import Console
 from rich.align import Align
 from rich.panel import Panel
 from rich.text import Text
@@ -6,7 +7,7 @@ from src.modules.utils import get_terminal_width
 
 
 # https://patorjk.com/software/taag/
-def print_banner(console) -> None:
+def print_banner(console: Console) -> None:
     width = get_terminal_width()
     height = 8
     banner = """\
@@ -29,7 +30,11 @@ ___           __          ____  _       __ _   __   _____         _  __
 
     panel = Panel(
         Align(
-            Text(banner, justify="center", style="blue"),
+            Text(
+                banner,
+                justify="center",
+                style="blue"
+            ),
             vertical="middle",
             align="center",
         ),
