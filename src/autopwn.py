@@ -93,7 +93,13 @@ def StartScanning(
 
     console.print(
         "{time} - Scan completed.".format(
-            time=datetime.now().strftime("%b %d %Y %H:%M:%S")
+            time=(
+                datetime
+                    .now()
+                    .strftime(
+                        "%b %d %Y %H:%M:%S"
+                    )
+            )
         )
     )
 
