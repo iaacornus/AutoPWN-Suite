@@ -98,12 +98,7 @@ def StartScanning(
     )
 
 
-def main() -> None:
-    __author__ = "GamehunterKaan"
-    __version__ = "2.1.5"
-
-    args = cli()
-
+def scan(args, version):
     console = Console(record=True, color_system="truecolor")
     console2 = Console(record=False, color_system="truecolor")
 
@@ -113,12 +108,9 @@ def main() -> None:
 
     log = Logger(console)
 
-    if args.version:
-        print(f"AutoPWN Suite v{__version__}")
-        raise SystemExit
 
     print_banner(console)
-    check_version(__version__, log)
+    check_version(version, log)
 
     if args.config:
         InitArgsConf(args, log)
@@ -157,6 +149,18 @@ def main() -> None:
     SaveOutput(
         console, args.output_type, args.report, args.output
     )
+
+
+def main() -> None:
+    __author__ = "GamehunterKaan"
+    __version__ = "2.1.5"
+
+    args = cli()
+
+    if args.version:
+        print(f"AutoPWN Suite v{__version__}")
+    else:
+        scan(args, __version__)
 
 
 if __name__ == "__main__":
