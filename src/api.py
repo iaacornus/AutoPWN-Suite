@@ -26,7 +26,7 @@ class AutoScanner:
     def __str__(self: Self) -> str:
         return str(self.scan_results)
 
-    def InitHostInfo(self: Self, target_key: JSON) -> JSON:
+    def init_host_info(self: Self, target_key: JSON) -> JSON:
         os_info = {}
         try:
             mac = target_key["addresses"]["mac"]
@@ -61,7 +61,7 @@ class AutoScanner:
 
         return os_info
 
-    def ParseVulnInfo(self: Self, vuln):
+    def parse_vuln_info(self: Self, vuln):
         vuln_info = {}
         vuln_info["description"] = vuln.description
         vuln_info["severity"] = vuln.severity
@@ -71,7 +71,7 @@ class AutoScanner:
 
         return vuln_info
 
-    def CreateScanArgs(
+    def create_scan_args(
         self,
         host_timeout,
         scan_speed,
@@ -89,15 +89,15 @@ class AutoScanner:
             scan_args.append("-T")
             scan_args.append(str(scan_speed))
         elif scan_speed and not scan_speed in range(0, 6):
-            raise Exception(
+            raise ValueError(
                 "Scanspeed must be in range of 0, 5."
             )
 
         if is_root() and os_scan:
             scan_args.append("-O")
         elif os_scan:
-            raise Exception(
-                "Root privileges are required for os scan."
+            raise PermissionError(
+                "Root privileges are required for OS scan."
             )
 
         if type(nmap_args) == list:
@@ -110,7 +110,7 @@ class AutoScanner:
 
         return scan_arguments
 
-    def SearchVuln(
+    def search_vuln(
             self,
             port_key: JSON,
             apiKey: str = None,
@@ -133,7 +133,7 @@ class AutoScanner:
 
         vulns = {}
         for vuln in Vulnerablities:
-            vulns[vuln.CVEID] = self.ParseVulnInfo(vuln)
+            vulns[vuln.CVEID] = self.parse_vuln_info(vuln)
 
         return vulns
 
@@ -152,7 +152,7 @@ class AutoScanner:
             target = [target]
 
         nm = PortScanner()
-        scan_arguments = self.CreateScanArgs(
+        scan_arguments = self.create_scan_args(
             host_timeout, scan_speed, os_scan, nmap_args
         )
         for host in target:
@@ -169,7 +169,7 @@ class AutoScanner:
                 self.scan_results[host]["ports"] = port_scan
 
             if os_scan and is_root():
-                os_info = self.InitHostInfo(nm[host])
+                os_info = self.init_host_info(nm[host])
                 self.scan_results[host]["os"] = os_info
 
             if not scan_vulns:
@@ -178,7 +178,7 @@ class AutoScanner:
             vulns = {}
             for port in nm[host]["tcp"]:
                 product = nm[host]["tcp"][port]["product"]
-                Vulnerablities = self.SearchVuln(
+                Vulnerablities = self.search_vuln(
                         nm[host]["tcp"][port], apiKey, debug
                     )
                 if Vulnerablities:
