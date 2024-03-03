@@ -61,7 +61,7 @@ class AutoScanner:
 
         return os_info
 
-    def parse_vuln_info(self: Self, vuln):
+    def parse_vuln_info(self: Self, vuln) -> dict[str, str]:
         vuln_info = {}
         vuln_info["description"] = vuln.description
         vuln_info["severity"] = vuln.severity
@@ -72,7 +72,7 @@ class AutoScanner:
         return vuln_info
 
     def create_scan_args(
-        self,
+        self: Self,
         host_timeout,
         scan_speed,
         os_scan: bool,
@@ -113,7 +113,7 @@ class AutoScanner:
     def search_vuln(
             self,
             port_key: JSON,
-            apiKey: str = None,
+            api_key: str = None,
             debug: bool = False
         ) -> JSON:
         product = port_key["product"]
@@ -127,22 +127,22 @@ class AutoScanner:
         if debug:
             print(f"Searching for keyword {keyword} ...")
 
-        Vulnerablities = searchCVE(keyword, log, apiKey)
-        if len(Vulnerablities) == 0:
+        vulnerabilities = searchCVE(keyword, log, api_key)
+        if len(vulnerabilities) == 0:
             return
 
         vulns = {}
-        for vuln in Vulnerablities:
+        for vuln in vulnerabilities:
             vulns[vuln.CVEID] = self.parse_vuln_info(vuln)
 
         return vulns
 
     def scan(
-            self,
+            self: Self,
             target,
             host_timeout: int = None,
             scan_speed: int = None,
-            apiKey: str = None,
+            api_key: str = None,
             os_scan: bool = False,
             scan_vulns: bool = True,
             nmap_args=None,
@@ -178,11 +178,11 @@ class AutoScanner:
             vulns = {}
             for port in nm[host]["tcp"]:
                 product = nm[host]["tcp"][port]["product"]
-                Vulnerablities = self.search_vuln(
-                        nm[host]["tcp"][port], apiKey, debug
+                vulnerabilities = self.search_vuln(
+                        nm[host]["tcp"][port], api_key, debug
                     )
-                if Vulnerablities:
-                    vulns[product] = Vulnerablities
+                if vulnerabilities:
+                    vulns[product] = vulnerabilities
 
             self.scan_results[host]["vulns"] = vulns
 
