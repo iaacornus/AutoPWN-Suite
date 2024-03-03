@@ -1,5 +1,7 @@
 import logging
+from typing import Self
 
+from rich.console import Console
 from rich.logging import RichHandler
 from rich.text import Text
 
@@ -19,7 +21,7 @@ class Logger:
     Custom logger
     """
 
-    def __init__(self, console) -> None:
+    def __init__(self: Self, console: Console) -> None:
         logging.basicConfig(
             format="%(message)s",
             level=logging.INFO,
@@ -32,10 +34,10 @@ class Logger:
         self.log: object = logging.getLogger("rich")
 
     def logger(
-        self,
-        exception_: str,
-        message: str,
-    ) -> None:
+            self: Self,
+            exception_: str,
+            message: str,
+        ) -> None:
         """
         * Log the proccesses with the passed message depending on the
         * exception_ variable
@@ -52,10 +54,10 @@ class Logger:
         """
 
         if exception_ == "info":
-            self.log.info(f"[+] {message}")
+            self.log.info("[+] %s", message)
         elif exception_ == "error":
-            self.log.error(f"[-] {message}")
+            self.log.error("[-] %s", message)
         elif exception_ == "warning":
-            self.log.warning(f"[*] {message}")
+            self.log.warning("[*] %s", message)
         elif exception_ == "success":
-            self.log.info(f"[+] {message}")
+            self.log.info("[+] %s", message)
