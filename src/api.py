@@ -1,5 +1,6 @@
 from json import dumps
 from typing import Any, Dict, List, Type, Union
+from typing import Self
 
 from nmap import PortScanner
 
@@ -19,13 +20,13 @@ JSON = Union[
 
 
 class AutoScanner:
-    def __init__(self) -> None:
+    def __init__(self: Self) -> None:
         self.scan_results = {}
 
-    def __str__(self) -> str:
+    def __str__(self: Self) -> str:
         return str(self.scan_results)
 
-    def InitHostInfo(self, target_key: JSON) -> JSON:
+    def InitHostInfo(self: Self, target_key: JSON) -> JSON:
         os_info = {}
         try:
             mac = target_key["addresses"]["mac"]
@@ -60,7 +61,7 @@ class AutoScanner:
 
         return os_info
 
-    def ParseVulnInfo(self, vuln):
+    def ParseVulnInfo(self: Self, vuln):
         vuln_info = {}
         vuln_info["description"] = vuln.description
         vuln_info["severity"] = vuln.severity
@@ -150,7 +151,6 @@ class AutoScanner:
         if type(target) == str:
             target = [target]
 
-        log = fake_logger()
         nm = PortScanner()
         scan_arguments = self.CreateScanArgs(
             host_timeout, scan_speed, os_scan, nmap_args
@@ -188,7 +188,7 @@ class AutoScanner:
 
         return self.scan_results
 
-    def save_to_file(self, filename: str = "autopwn.json") -> None:
+    def save_to_file(self: Self, filename: str = "autopwn.json") -> None:
         with open(filename, "w") as output:
             json_object = dumps(self.scan_results)
             output.write(json_object)
