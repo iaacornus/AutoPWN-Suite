@@ -6,7 +6,12 @@ from src.modules.banners import print_banner
 from src.modules.getexploits import GetExploitsFromArray
 from src.modules.logger import Logger
 from src.modules.report import InitializeReport
-from src.modules.scanner import AnalyseScanResults, DiscoverHosts, NoiseScan, PortScan
+from src.modules.scanner import (
+    AnalyseScanResults,
+    DiscoverHosts,
+    NoiseScan,
+    PortScan
+)
 from src.modules.searchvuln import SearchSploits
 from src.modules.utils import (
     GetHostsToScan,
