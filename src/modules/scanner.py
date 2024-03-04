@@ -137,7 +137,7 @@ def PortScan(
                     ]
                 )
             )
-    except Exception as e:
+    except Exception as e: #! fix this stupid exception
         raise SystemExit(f"Error: {e}")
     else:
         return nm
@@ -151,8 +151,8 @@ def CreateNoise(target) -> None:
                 nm.scan(hosts=target, arguments="-A -T 5 -D RND:10")
             else:
                 nm.scan(hosts=target, arguments="-A -T 5")
-        except KeyboardInterrupt:
-            raise SystemExit("Ctr+C, aborting.")
+        except KeyboardInterrupt as err:
+            raise SystemExit("Ctr+C, aborting.") from err
         else:
             break
 
@@ -191,9 +191,8 @@ def NoiseScan(
         for P in NoisyProcesses:
             P.terminate()
         raise SystemExit
-    except KeyboardInterrupt:
-        log.logger("error", "Noise scan interrupted!")
-        raise SystemExit
+    except KeyboardInterrupt as err:
+        raise SystemExit("Noise scan interrupted!") from err
 
 
 def DiscoverHosts(
