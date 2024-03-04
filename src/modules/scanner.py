@@ -21,21 +21,20 @@ class TargetInfo:
     def colored(self) -> str:
 
         return (
-            f"[yellow]MAC Address :[/yellow] {self.mac}\n"
-            + f"[yellow]Vendor :[/yellow] {self.vendor}\n"
-            + f"[yellow]OS :[/yellow] {self.os}\n"
-            + f"[yellow]Accuracy :[/yellow] {self.os_accuracy}\n"
-            + f"[yellow]Type :[/yellow] {self.os_type[:20]}\n"
+            "[yellow]MAC Address: [/yellow] {self.mac}\n"
+            f"[yellow]Vendor: [/yellow] {self.vendor}\n"
+            f"[yellow]OS: [/yellow] {self.os}\n"
+            f"[yellow]Accuracy: [/yellow] {self.os_accuracy}\n"
+            f"[yellow]Type: [/yellow] {self.os_type[:20]}\n"
         )
 
     def __str__(self) -> str:
         return (
-            f"MAC Address : {self.mac}"
-            + f" Vendor : {self.vendor}\n"
-            + f"OS : {self.os}"
-            + f" Accuracy : {self.os_accuracy}"
-            + f" Type : {self.os_type}"
-            + "\n"
+            f"MAC Address: {self.mac}\n"
+            f"Vendor: {self.vendor}\n"
+            f"OS: {self.os}\n"
+            f"Accuracy: {self.os_accuracy}\n"
+            f"Type: {self.os_type}\n"
         )
 
 
