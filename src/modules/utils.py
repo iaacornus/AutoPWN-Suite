@@ -1041,7 +1041,7 @@ def ParamPrint(
 
 def CheckConnection(log) -> bool:
     try:
-        get("https://google.com")
+        get("https://google.com", timeout=5)
     except Exception as e:
         log.logger("error", "Connection failed.")
         log.logger("error", e)
