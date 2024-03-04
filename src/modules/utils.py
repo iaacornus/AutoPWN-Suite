@@ -404,14 +404,14 @@ def InitArgsTarget(args, log):
             if DontAskForConfirmation:
                 try:
                     target = DetectIPRange()
-                except Exception as e:
+                except Exception as e: #! fix this crap
                     log.logger("error", e)
                     target = input("Enter target range to scan: ")
             else:
                 try:
                     target = input("Enter target range to scan: ")
-                except KeyboardInterrupt:
-                    raise SystemExit("Ctrl+C pressed. Exiting.")
+                except KeyboardInterrupt as err:
+                    raise SystemExit("Ctrl+C pressed. Exiting.") from err
 
     return target
 
@@ -793,18 +793,15 @@ def InitArgsConf(args, log) -> None:
                         )
                 )
 
-    except FileNotFoundError:
-        log.logger("error", "Config file not found!")
-        raise SystemExit
-    except PermissionError:
-        log.logger(
-            "error",
+    except FileNotFoundError as err:
+        raise SystemExit("Config file not found!") from err
+    except PermissionError as err:
+        raise SystemExit(
             (
                 "Permission denied while"
                 " trying to read config file!"
             )
-        )
-        raise SystemExit
+        ) from err
 
 
 def install_nmap_linux(log) -> None:
@@ -924,9 +921,8 @@ def install_nmap_windows(log) -> None:
             "warning", "Nmap is installed but shell restart is required."
         )
         raise SystemExit
-    except CalledProcessError:
-        log.logger("error", "Couldn't install nmap! (Windows)")
-        raise SystemExit
+    except CalledProcessError as err:
+        raise SystemExit("Couldn't install nmap! (Windows)") from err
 
 
 def install_nmap_mac(log) -> None:
@@ -974,10 +970,7 @@ def check_nmap(log) -> None:
                     "Unknown OS! Auto installation not supported!"
                 )
         else:
-            log.logger(
-                "error", "Denied permission to install Nmap."
-            )
-            raise SystemExit
+            raise SystemExit("Denied permission to install Nmap.")
 
 
 def ParamPrint(
@@ -1084,8 +1077,7 @@ def get_terminal_width() -> int:
 
 def check_version(cur_version: str, log) -> None:
     try:
-        data = get("https://pypi.org/pypi/autopwn-suite/json").json()
-    except Exception as e:
+    except Exception as e: #! fix this crap
         log.logger(
             "error",
             (
