@@ -115,14 +115,14 @@ def SendWebhook(url, log) -> None:
     payload = {"payload": file}
 
     try:
-        req = post(url, files=payload)
+        req = post(url, files=payload, timeout=5)
         file.close()
         if req.status_code == 200:
             log.logger("success", "Webhook report sent succesfully.")
         else:
             log.logger("error", "Webhook report failed to send.")
             print(req.text)
-    except Exception as e:
+    except Exception as e: #! use other exception
         log.logger("error", e)
         log.logger("error", "Webhook report failed to send.")
 
