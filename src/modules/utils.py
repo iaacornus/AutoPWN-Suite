@@ -242,7 +242,7 @@ class fake_logger:
 def is_root() -> bool:
     try:
         return getuid() == 0
-    except Exception as e:
+    except OSError:
         return windll.shell32.IsUserAnAdmin() == 1
 
 
