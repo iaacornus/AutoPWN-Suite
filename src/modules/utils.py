@@ -1,7 +1,7 @@
 try:
-    from os import getuid
-
     import distro
+
+    from os import getuid
 except ImportError:
     from ctypes import windll
 
