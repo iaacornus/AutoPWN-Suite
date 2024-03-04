@@ -60,8 +60,10 @@ def SearchKeyword(keyword: str, log, apiKey=None) -> list:
     try:
         ApiResponseCVE = searchCVE(keyword, log, apiKey)
     except KeyboardInterrupt:
-        log.logger("warning", f"Skipped vulnerability detection for {keyword}")
-    except Exception as e:
+        log.logger(
+            "warning", f"Skipped vulnerability detection for {keyword}"
+        )
+    except Exception as e: #! fix this stupid exception
         log.logger("error", e)
     else:
         return ApiResponseCVE
@@ -116,7 +118,11 @@ def SearchSploits(
                 continue
 
             if not printed_banner:
-                banner(f"Possible vulnerabilities for {target}", "red", console)
+                banner(
+                    f"Possible vulnerabilities for {target}",
+                    "red",
+                    console
+                )
                 printed_banner = True
 
             console.print(f"┌─ [yellow][ {keyword} ][/yellow]")
