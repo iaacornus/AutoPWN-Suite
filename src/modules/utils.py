@@ -1,15 +1,10 @@
-try:
-    import distro
-
-    from os import getuid
-except ImportError:
-    from ctypes import windll
-
+import distro
+from ctypes import windll
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from datetime import datetime
 from enum import Enum
-from os import get_terminal_size
+from os import get_terminal_size, getuid
 from platform import platform, system
 from re import search
 from socket import AF_INET, SOCK_DGRAM, socket
