@@ -588,7 +588,7 @@ def GetHostsToScan(hosts, console) -> list[str]:
     )
 
     while True:
-        host = input(f"────> ")
+        host = input("-> ")
         Targets = hosts
 
         if host in hosts:
@@ -1006,7 +1006,7 @@ def ParamPrint(
     )
 
     if args.skip_discovery:
-        msg += f"│\tSkip discovery: True\n"
+        msg += "│\tSkip discovery: True\n"
 
     if args.host_file:
         msg += f"│\tHostfile: {args.host_file}\n"
@@ -1042,7 +1042,7 @@ def ParamPrint(
 def CheckConnection(log) -> bool:
     try:
         get("https://google.com", timeout=5)
-    except Exception as e:
+    except Exception as e: #! fix this crap
         log.logger("error", "Connection failed.")
         log.logger("error", e)
         return False
@@ -1077,6 +1077,9 @@ def get_terminal_width() -> int:
 
 def check_version(cur_version: str, log) -> None:
     try:
+        data = get(
+                "https://pypi.org/pypi/autopwn-suite/json", timeout=5
+            ).json()
     except Exception as e: #! fix this crap
         log.logger(
             "error",
