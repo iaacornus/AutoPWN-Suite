@@ -1050,7 +1050,7 @@ def CheckConnection(log) -> bool:
         return True
 
 
-def SaveOutput(console, out_type, report, output_file) -> None:
+def SaveOutput(console, out_type, output_file) -> None:
     if out_type == "html":
         if not output_file.endswith(".html"):
             output_file += ".html"
