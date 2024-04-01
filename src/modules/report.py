@@ -15,7 +15,7 @@ class ReportType(Enum):
 
     NONE = 0
     EMAIL = 1
-    WEBHOOK = 2
+    webhook = 2
 
 
 @dataclass()
@@ -32,22 +32,22 @@ class ReportMail:
     port: int
 
 
-def InitializeEmailReport(EmailObj, log, console) -> None:
+def initialize_email_report(email_obj, log, console) -> None:
     """
     Initialize email report.
     """
-    email = EmailObj.email
-    password = EmailObj.password
-    email_to = EmailObj.email_to
-    email_from = EmailObj.email_from
-    server = EmailObj.server
-    port = EmailObj.port
+    email = email_obj.email
+    password = email_obj.password
+    email_to = email_obj.email_to
+    email_from = email_obj.email_from
+    server = email_obj.server
+    port = email_obj.port
 
     console.save_html("tmp_report.html")
 
     log.logger("info", "Sending email report...")
 
-    SendEmail(
+    send_email(
         email,
         password,
         email_to,
@@ -60,7 +60,7 @@ def InitializeEmailReport(EmailObj, log, console) -> None:
     remove("tmp_report.html")
 
 
-def SendEmail(
+def send_email(
         email,
         password,
         email_to,
@@ -97,17 +97,17 @@ def SendEmail(
     log.logger("success", "Email report sent successfully.")
 
 
-def InitializeWebhookReport(Webhook, log, console) -> None:
+def initialize_webhook_report(webhook, log, console) -> None:
     """
     Initialize webhook report.
     """
     log.logger("info", "Sending webhook report...")
     console.save_text("report.log")
-    SendWebhook(Webhook, log)
+    send_webhook(webhook, log)
     remove("report.log")
 
 
-def SendWebhook(url, log) -> None:
+def send_webhook(url, log) -> None:
     """
     Send webhook report.
     """
@@ -118,20 +118,20 @@ def SendWebhook(url, log) -> None:
         req = post(url, files=payload, timeout=5)
         file.close()
         if req.status_code == 200:
-            log.logger("success", "Webhook report sent succesfully.")
+            log.logger("success", "webhook report sent succesfully.")
         else:
-            log.logger("error", "Webhook report failed to send.")
+            log.logger("error", "webhook report failed to send.")
             print(req.text)
     except Exception as e: #! use other exception
         log.logger("error", e)
-        log.logger("error", "Webhook report failed to send.")
+        log.logger("error", "webhook report failed to send.")
 
 
-def InitializeReport(Method, ReportObject, log, console) -> None:
+def initialize_report(method, report_object, log, console) -> None:
     """
     Initialize report.
     """
-    if Method == ReportType.EMAIL:
-        InitializeEmailReport(ReportObject, log, console)
-    elif Method == ReportType.WEBHOOK:
-        InitializeWebhookReport(ReportObject, log, console)
+    if method == ReportType.EMAIL:
+        initialize_email_report(report_object, log, console)
+    elif method == ReportType.webhook:
+        initialize_webhook_report(report_object, log, console)
