@@ -954,7 +954,7 @@ def check_nmap(log) -> None:
         else:
             auto_install = (
                 input(
-                    f"Install Nmap on your system ({distro.id()})? "
+                    f"Install Nmap on your system ({system()})? "
                 ).lower() != "n"
             )
         if auto_install:
