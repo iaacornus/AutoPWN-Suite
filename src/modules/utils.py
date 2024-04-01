@@ -806,7 +806,7 @@ def InitArgsConf(args, log) -> None:
 
 def install_nmap_linux(log) -> None:
     distro_ = distro.id().lower()
-    while True:
+    for _ in range(3):
         try:
             if distro_ in [
                 "ubuntu",
@@ -826,7 +826,6 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL,
                 )
-                break
             elif distro_ in ["arch", "manjaro"]:
                 check_call(
                     [
@@ -838,7 +837,6 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL,
                 )
-                break
             elif distro_ in ["fedora", "oracle"]:
                 check_call(
                     [
@@ -850,7 +848,6 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL
                 )
-                break
             elif distro in ["rhel", "centos"]:
                 check_call(
                     [
@@ -862,7 +859,6 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL
                 )
-                break
             elif distro in ["sles", "opensuse"]:
                 check_call(
                     [
@@ -874,7 +870,6 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL,
                 )
-                break
             else:
                 raise CalledProcessError
 
@@ -889,21 +884,22 @@ def install_nmap_linux(log) -> None:
                     " yum\n\t4 pacman\n\t5 zypper.\nSelect option [0-5] >"
                 )
             )
-            if _distro_ == 1:
-                distro_ = "ubuntu"
-            elif _distro_ == 2:
-                distro_ = "fedora"
-            elif _distro_ == 3:
-                distro_ = "centos"
-            elif _distro_ == 4:
-                distro_ = "arch"
-            elif _distro_ == 5:
-                distro_ = "opensuse"
-            else:
-                log.logger("error", "Couldn't install nmap (Linux)")
-                break
+            match _distro_:
+                case 1:
+                    distro_ = "ubuntu"
+                case 2:
+                    distro_ = "fedora"
+                case 3:
+                    distro_ = "centos"
+                case 4:
+                    distro_ = "arch"
+                case 5:
+                    distro_ = "opensuse"
+                case _:
+                    log.logger("error", "Couldn't install nmap (Linux)")
             continue
-
+        else:
+            break
 
 def install_nmap_windows(log) -> None:
     try:
