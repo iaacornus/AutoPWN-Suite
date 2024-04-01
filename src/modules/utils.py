@@ -949,28 +949,30 @@ def check_nmap(log) -> None:
         )
     except (CalledProcessError, FileNotFoundError):
         log.logger("warning", "Nmap is not installed.")
-        if DontAskForConfirmation:
-            auto_install = True
-        else:
+
+        auto_install = True
+
+        if not DontAskForConfirmation:
             auto_install = (
                 input(
                     f"Install Nmap on your system ({system()})? "
                 ).lower() != "n"
             )
-        if auto_install:
-            platform_ = system().lower()
-            if platform_ == "linux":
-                install_nmap_linux(log)
-            elif platform_ == "windows":
-                install_nmap_windows(log)
-            elif platform_ == "darwin":
-                install_nmap_mac(log)
-            else:
-                raise SystemExit(
-                    "Unknown OS! Auto installation not supported!"
-                )
-        else:
+
+        if not auto_install:
             raise SystemExit("Denied permission to install Nmap.")
+
+        match system().lower():
+            case "linux":
+                install_nmap_linux(log)
+            case "windows":
+                install_nmap_windows(log)
+            case "darwin":
+                install_nmap_mac(log)
+            case _:
+                raise SystemExit(
+                        "Unknown OS! Auto installation not supported!"
+                    )
 
 
 def ParamPrint(
