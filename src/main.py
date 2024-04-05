@@ -2,18 +2,18 @@ from datetime import datetime
 
 from rich.console import Console
 
-from src.modules.banners import print_banner
-from src.modules.getexploits import GetExploitsFromArray
-from src.modules.logger import Logger
-from src.modules.report import InitializeReport
-from src.modules.scanner import (
+from src.utils.banners import print_banner
+from src.utils.getexploits import GetExploitsFromArray
+from src.utils.logger import Logger
+from src.utils.report import InitializeReport
+from src.utils.scanner import (
     AnalyseScanResults,
     DiscoverHosts,
     NoiseScan,
     PortScan
 )
-from src.modules.searchvuln import SearchSploits
-from src.modules.utils import (
+from src.utils.searchvuln import SearchSploits
+from src.utils.utils import (
     GetHostsToScan,
     InitArgsAPI,
     InitArgsConf,
@@ -31,7 +31,7 @@ from src.modules.utils import (
     cli,
     check_version,
 )
-from src.modules.web.webvuln import webvuln
+from src.utils.web.webvuln import webvuln
 
 
 def StartScanning(

@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from textwrap import wrap
 
-from src.modules.logger import banner
-from src.modules.nist_search import searchCVE
-from src.modules.utils import CheckConnection, get_terminal_width
+from src.utils.logger import banner
+from src.utils.nist_search import searchCVE
+from src.utils.utils import CheckConnection, get_terminal_width
 
 
 @dataclass

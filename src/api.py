@@ -4,9 +4,9 @@ from typing import Self
 
 from nmap import PortScanner
 
-from src.modules.nist_search import searchCVE
-from src.modules.searchvuln import GenerateKeyword
-from src.modules.utils import fake_logger, is_root
+from src.utils.nist_search import searchCVE
+from src.utils.searchvuln import GenerateKeyword
+from src.utils.utils import fake_logger, is_root
 
 JSON = Union[
         Dict[str, Any],

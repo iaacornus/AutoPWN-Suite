@@ -14,7 +14,7 @@ from sys import platform as sys_platform
 from requests import get
 from rich.text import Text
 
-from src.modules.report import ReportMail, ReportType
+from src.utils.report import ReportMail, ReportType
 
 
 class ScanMode(Enum):

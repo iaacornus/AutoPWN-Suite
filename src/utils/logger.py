@@ -5,7 +5,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 from rich.text import Text
 
-from src.modules.utils import get_terminal_width
+from src.utils.utils import get_terminal_width
 
 
 def banner(msg, color, console) -> None:

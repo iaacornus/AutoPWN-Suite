@@ -6,8 +6,8 @@ from nmap import PortScanner
 from rich import box
 from rich.table import Table
 
-from src.modules.logger import banner
-from src.modules.utils import GetIpAdress, ScanMode, ScanType, is_root
+from src.utils.logger import banner
+from src.utils.utils import GetIpAdress, ScanMode, ScanType, is_root
 
 
 @dataclass()
