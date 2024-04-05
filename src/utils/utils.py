@@ -16,14 +16,6 @@ from src.data.dataclass import ScanMode, ScanType
 from src.utils.report import ReportMail, ReportType
 
 
-
-
-
-class fake_logger: #! fix this shit
-    def logger(self, exception_: str, message: str):
-        pass
-
-
 def is_root() -> bool: #! fix this shit
     try:
         return getuid() == 0
