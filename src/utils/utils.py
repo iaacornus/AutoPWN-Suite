@@ -797,16 +797,13 @@ def CheckConnection(log) -> bool: #! fix this shit
 
 
 def SaveOutput(console, out_type, output_file) -> None: #! fix this shit
-    if out_type == "html":
-        if not output_file.endswith(".html"):
-            output_file += ".html"
-        console.save_html(output_file)
-    elif out_type == "svg":
-        if not output_file.endswith(".svg"):
-            output_file += ".svg"
-        console.save_svg(output_file)
-    elif out_type == "txt":
-        console.save_text(output_file)
+    match out_type:
+        case "html":
+            console.save_html(f"{output_file}.html")
+        case "svg":
+            console.save_svg(f"{output_file}.svg")
+        case "txt":
+            console.save_text(f"{output_file}.txt")
 
 
 def get_terminal_width() -> int: #! fix this shit
