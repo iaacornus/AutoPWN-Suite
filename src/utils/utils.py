@@ -805,19 +805,6 @@ def SaveOutput(console, out_type, output_file) -> None: #! fix this shit
         case "txt":
             console.save_text(f"{output_file}.txt")
 
-
-def get_terminal_width() -> int: #! fix this shit
-    try:
-        width, _ = get_terminal_size()
-    except OSError:
-        width = 80
-
-    if system().lower() == "windows":
-        width -= 1
-
-    return width
-
-
 def check_version(cur_version: str, log) -> None:
     try:
         data = get(
