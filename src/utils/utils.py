@@ -607,7 +607,7 @@ def install_nmap(log) -> None: #! fix this shit
                         "install",
                         "nmap"
                     ]
-            else:
+            elif os == "linux":
                 distro_: str = distro.id().lower()
                 if distro_ in [
                     "ubuntu",
@@ -658,6 +658,7 @@ def install_nmap(log) -> None: #! fix this shit
                         ]
                 else:
                     raise CalledProcessError
+                    "Unknown OS, installation not supported."
         except CalledProcessError as err:
             if os == "windows":
                 raise SystemExit(
