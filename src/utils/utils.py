@@ -319,10 +319,10 @@ def InitReport(args, log) -> tuple:
 #     return portscan, vulnscan, downloadexploits
 
 
-def WebScan() -> bool: #! fix this shit
-    return Confirmation(
-        "Do you want to scan for web vulnerabilities? [Y/n]: "
-    )
+# def WebScan() -> bool: #! fix this shit
+#     return Confirmation(
+#         "Do you want to scan for web vulnerabilities? [Y/n]: "
+#     )
 
 
 def GetHostsToScan(hosts, console) -> list[str]:
