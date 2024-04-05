@@ -3,7 +3,6 @@ from ctypes import windll
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from datetime import datetime
-from enum import Enum
 from os import get_terminal_size, getuid
 from platform import platform, system
 from re import search
@@ -17,15 +16,6 @@ from rich.text import Text
 from src.utils.report import ReportMail, ReportType
 
 
-class ScanMode(Enum):
-    NORMAL: int = 0
-    NOISE: int = 1
-    EVADE: int = 2
-
-
-class ScanType(Enum):
-    PING: int = 0
-    ARP: int = 1
 
 
 def cli():
