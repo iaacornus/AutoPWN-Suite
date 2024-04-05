@@ -18,10 +18,14 @@ from src.utils.report import ReportMail, ReportType
 
 def is_root() -> bool: #! fix this shit
     try:
-        return getuid() == 0
-    except OSError:
-        return windll.shell32.IsUserAnAdmin() == 1
+        if platform() != "windows":
+            return getuid() == 0
 
+        return windll.shell32.IsUserAnAdmin() == 1
+    except (OSError, PermissionError) as err:
+        raise SystemExit(
+            f"Cannot determine permissions: {err}"
+        ) from err
 
 def GetIpAdress() -> str: #! fix this shit
     s = socket(AF_INET, SOCK_DGRAM)
