@@ -18,14 +18,14 @@ from src.modules.report import ReportMail, ReportType
 
 
 class ScanMode(Enum):
-    Normal = 0
-    Noise = 1
-    Evade = 2
+    NORMAL: int = 0
+    NOISE: int = 1
+    EVADE: int = 2
 
 
 class ScanType(Enum):
-    Ping = 0
-    ARP = 1
+    PING: int = 0
+    ARP: int = 1
 
 
 def cli():
@@ -234,19 +234,19 @@ def cli():
     return argparser.parse_args()
 
 
-class fake_logger:
+class fake_logger: #! fix this shit
     def logger(self, exception_: str, message: str):
         pass
 
 
-def is_root() -> bool:
+def is_root() -> bool: #! fix this shit
     try:
         return getuid() == 0
     except OSError:
         return windll.shell32.IsUserAnAdmin() == 1
 
 
-def GetIpAdress() -> str:
+def GetIpAdress() -> str: #! fix this shit
     s = socket(AF_INET, SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     PrivateIPAdress = s.getsockname()[0]
@@ -254,7 +254,7 @@ def GetIpAdress() -> str:
 
 
 def DetectIPRange() -> str:
-    net_dict = {
+    net_dict: dict[str, int] = {
         "255.255.255.255": 32,
         "255.255.255.254": 31,
         "255.255.255.252": 30,
@@ -309,7 +309,7 @@ def DetectIPRange() -> str:
     return net_range
 
 
-def InitAutomation(args) -> None:
+def InitAutomation(args) -> None: #! fix this shit
     global DontAskForConfirmation
     if args.yes_please:
         DontAskForConfirmation = True
@@ -345,8 +345,8 @@ def InitArgsAPI(args, log) -> str:
     return apiKey
 
 
-def InitArgsScanType(args, log) -> ScanType:
-    scantype = ScanType.Ping
+def InitArgsScanType(args, log) -> ScanType: #! fix this shit
+    scantype = ScanType.PING
     if args.scan_type == "arp":
         if is_root():
             scantype = ScanType.ARP
@@ -365,7 +365,7 @@ def InitArgsScanType(args, log) -> ScanType:
     return scantype
 
 
-def InitArgsTarget(args, log):
+def InitArgsTarget(args, log): #! fix this shit
     if args.target:
         target = args.target
     else:
@@ -417,11 +417,11 @@ def InitArgsTarget(args, log):
 
 
 def InitArgsMode(args, log) -> ScanMode:
-    scanmode = ScanMode.Normal
+    scanmode = ScanMode.NORMAL
 
     if args.mode == "evade":
         if is_root():
-            scanmode = ScanMode.Evade
+            scanmode = ScanMode.EVADE
             log.logger("info", "Evasion mode enabled!")
         else:
             log.logger(
@@ -430,7 +430,7 @@ def InitArgsMode(args, log) -> ScanMode:
                 + " Switching back to normal mode ...",
             )
     elif args.mode == "noise":
-        scanmode = ScanMode.Noise
+        scanmode = ScanMode.NOISE
         log.logger("info", "Noise mode enabled!")
 
     return scanmode
@@ -509,7 +509,7 @@ def InitReport(args, log) -> tuple:
         return Method, Webhook
 
 
-def Confirmation(message) -> bool:
+def Confirmation(message) -> bool: #! fix this shit
     if DontAskForConfirmation:
         return True
 
@@ -517,7 +517,7 @@ def Confirmation(message) -> bool:
     return confirmation.lower() != "n"
 
 
-def UserConfirmation() -> tuple[bool, bool, bool]:
+def UserConfirmation() -> tuple[bool, bool, bool]: #! fix this shit
     if DontAskForConfirmation:
         return True, True, True
 
@@ -538,7 +538,7 @@ def UserConfirmation() -> tuple[bool, bool, bool]:
     return portscan, vulnscan, downloadexploits
 
 
-def WebScan() -> bool:
+def WebScan() -> bool: #! fix this shit
     return Confirmation(
         "Do you want to scan for web vulnerabilities? [Y/n]: "
     )
@@ -552,7 +552,7 @@ def GetHostsToScan(hosts, console) -> list[str]:
             )
         )
 
-    index = 0
+    index: int = 0
     for host in hosts:
         if not len(host) % 2 == 0:
             host += " "
@@ -625,7 +625,7 @@ def GetHostsToScan(hosts, console) -> list[str]:
     return Targets
 
 
-def InitArgsConf(args, log) -> None:
+def InitArgsConf(args, log) -> None: #! fix this shit
     if not args.config:
         return
 
@@ -804,8 +804,8 @@ def InitArgsConf(args, log) -> None:
         ) from err
 
 
-def install_nmap_linux(log) -> None:
-    distro_ = distro.id().lower()
+def install_nmap_linux(log) -> None: #! fix this shit
+    distro_: str = distro.id().lower()
     for _ in range(3):
         try:
             if distro_ in [
@@ -848,7 +848,7 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL
                 )
-            elif distro in ["rhel", "centos"]:
+            elif distro_ in ["rhel", "centos"]:
                 check_call(
                     [
                         "/usr/bin/sudo",
@@ -859,7 +859,7 @@ def install_nmap_linux(log) -> None:
                     ],
                     stderr=DEVNULL
                 )
-            elif distro in ["sles", "opensuse"]:
+            elif distro_ in ["sles", "opensuse"]:
                 check_call(
                     [
                         "/usr/bin/sudo",
@@ -971,7 +971,7 @@ def check_nmap(log) -> None:
                     )
 
 
-def ParamPrint(
+def ParamPrint( #! fix this shit
         args,
         targetarg: str,
         scantype_name: ScanType,
@@ -990,7 +990,7 @@ def ParamPrint(
             )
         )
 
-    term_width = get_terminal_width()
+    term_width: int = get_terminal_width()
 
     msg = (
         "\n┌─[ Scanning with the following parameters ]\n"
@@ -1037,7 +1037,7 @@ def ParamPrint(
     console.print(msg)
 
 
-def CheckConnection(log) -> bool:
+def CheckConnection(log) -> bool: #! fix this shit
     try:
         get("https://google.com", timeout=5)
     except Exception as e: #! fix this crap
@@ -1048,7 +1048,7 @@ def CheckConnection(log) -> bool:
         return True
 
 
-def SaveOutput(console, out_type, output_file) -> None:
+def SaveOutput(console, out_type, output_file) -> None: #! fix this shit
     if out_type == "html":
         if not output_file.endswith(".html"):
             output_file += ".html"
@@ -1061,7 +1061,7 @@ def SaveOutput(console, out_type, output_file) -> None:
         console.save_text(output_file)
 
 
-def get_terminal_width() -> int:
+def get_terminal_width() -> int: #! fix this shit
     try:
         width, _ = get_terminal_size()
     except OSError:
