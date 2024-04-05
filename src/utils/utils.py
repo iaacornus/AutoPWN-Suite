@@ -298,25 +298,25 @@ def InitReport(args, log) -> tuple:
 #     return confirmation.lower() != "n"
 
 
-def UserConfirmation() -> tuple[bool, bool, bool]: #! fix this shit
-    if DontAskForConfirmation:
-        return True, True, True
-
-    portscan = Confirmation("Do you want to scan ports? [Y/n]: ")
-    if not portscan:
-        return False, False, False
-
-    vulnscan = Confirmation(
-            "Do you want to scan for vulnerabilities? [Y/n]: "
-        )
-    if not vulnscan:
-        return True, False, False
-
-    downloadexploits = Confirmation(
-            "Do you want to download exploits? [Y/n]: "
-        )
-
-    return portscan, vulnscan, downloadexploits
+# def UserConfirmation() -> tuple[bool, bool, bool]: #! fix this shit
+#     if DontAskForConfirmation:
+#         return True, True, True
+#
+#     portscan = Confirmation("Do you want to scan ports? [Y/n]: ")
+#     if not portscan:
+#         return False, False, False
+#
+#     vulnscan = Confirmation(
+#             "Do you want to scan for vulnerabilities? [Y/n]: "
+#         )
+#     if not vulnscan:
+#         return True, False, False
+#
+#     downloadexploits = Confirmation(
+#             "Do you want to download exploits? [Y/n]: "
+#         )
+#
+#     return portscan, vulnscan, downloadexploits
 
 
 def WebScan() -> bool: #! fix this shit
