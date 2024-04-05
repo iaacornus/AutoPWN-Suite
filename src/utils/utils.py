@@ -290,12 +290,12 @@ def InitReport(args, log) -> tuple:
         return Method, Webhook
 
 
-def Confirmation(message) -> bool: #! fix this shit
-    if DontAskForConfirmation:
-        return True
-
-    confirmation = input(message)
-    return confirmation.lower() != "n"
+# def Confirmation(message) -> bool: #! fix this shit
+#     if DontAskForConfirmation:
+#         return True
+#
+#     confirmation = input(message)
+#     return confirmation.lower() != "n"
 
 
 def UserConfirmation() -> tuple[bool, bool, bool]: #! fix this shit
