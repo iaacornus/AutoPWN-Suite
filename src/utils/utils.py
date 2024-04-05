@@ -90,12 +90,12 @@ def DetectIPRange() -> str:
     return net_range
 
 
-def InitAutomation(args) -> None: #! fix this shit
-    global DontAskForConfirmation
-    if args.yes_please:
-        DontAskForConfirmation = True
-    else:
-        DontAskForConfirmation = False
+# def init_automation(if_yes: bool) -> None: #! fix this shit
+#     if args.yes_please:
+#         return True
+#         DontAskForConfirmation = True
+#     else:
+#         DontAskForConfirmation = False
 
 
 def InitArgsAPI(args, log) -> str:
