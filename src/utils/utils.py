@@ -7,7 +7,6 @@ from platform import platform, system
 from re import search
 from socket import AF_INET, SOCK_DGRAM, socket
 from subprocess import DEVNULL, PIPE, CalledProcessError, Popen, check_call
-from sys import platform as sys_platform
 
 from requests import get
 from rich.text import Text
@@ -585,87 +584,100 @@ def InitArgsConf(args, log) -> None: #! fix this shit
         ) from err
 
 
-def install_nmap_linux(log) -> None: #! fix this shit
-    distro_: str = distro.id().lower()
+def install_nmap(log) -> None: #! fix this shit
+    os: str = platform().lower()
     for _ in range(3):
         try:
-            if distro_ in [
-                "ubuntu",
-                "debian",
-                "linuxmint",
-                "raspbian",
-                "kali",
-                "parrot",
-            ]:
-                check_call(
-                    [
-                        "/usr/bin/sudo",
-                        "apt-get",
+            if os == "windows":
+                cmd: list[str] = [
+                        (
+                            "C:\\Windows\\system32"
+                            "\\WindowsPowerShell\\"
+                            "v1.0\\powershell.exe"
+                        ),
+                        "winget",
                         "install",
                         "nmap",
-                        "-y"
-                    ],
-                    stderr=DEVNULL,
-                )
-            elif distro_ in ["arch", "manjaro"]:
-                check_call(
-                    [
+                        "--silent",
+                    ]
+            elif os == "darwin":
+                cmd: list[str] = [
                         "/usr/bin/sudo",
-                        "pacman",
-                        "-S",
-                        "nmap",
-                        "--noconfirm"
-                    ],
-                    stderr=DEVNULL,
-                )
-            elif distro_ in ["fedora", "oracle"]:
-                check_call(
-                    [
-                        "/usr/bin/sudo",
-                        "dnf",
+                        "brew",
                         "install",
-                        "nmap",
-                        "-y"
-                    ],
-                    stderr=DEVNULL
-                )
-            elif distro_ in ["rhel", "centos"]:
-                check_call(
-                    [
-                        "/usr/bin/sudo",
-                        "yum",
-                        "install",
-                        "nmap",
-                        "-y"
-                    ],
-                    stderr=DEVNULL
-                )
-            elif distro_ in ["sles", "opensuse"]:
-                check_call(
-                    [
-                        "/usr/bin/sudo",
-                        "zypper",
-                        "install",
-                        "nmap",
-                        "--non-interactive"
-                    ],
-                    stderr=DEVNULL,
-                )
+                        "nmap"
+                    ]
             else:
-                raise CalledProcessError
+                distro_: str = distro.id().lower()
+                if distro_ in [
+                    "ubuntu",
+                    "debian",
+                    "linuxmint",
+                    "raspbian",
+                    "kali",
+                    "parrot",
+                ]:
+                    cmd: list[str] = [
+                            "/usr/bin/sudo",
+                            "apt-get",
+                            "install",
+                            "nmap",
+                            "-y"
+                        ]
+                elif distro_ in ["arch", "manjaro"]:
+                    cmd: list[str] = [
+                            "/usr/bin/sudo",
+                            "pacman",
+                            "-S",
+                            "nmap",
+                            "--noconfirm"
+                        ]
+                elif distro_ in ["fedora", "oracle"]:
+                    cmd: list[str] = [
+                            "/usr/bin/sudo",
+                            "dnf",
+                            "install",
+                            "nmap",
+                            "-y"
+                        ]
+                elif distro_ in ["rhel", "centos"]:
+                    cmd: list[str] = [
+                            "/usr/bin/sudo",
+                            "yum",
+                            "install",
+                            "nmap",
+                            "-y"
+                        ]
+                elif distro_ in ["sles", "opensuse"]:
+                    cmd: list[str] = [
+                            "/usr/bin/sudo",
+                            "zypper",
+                            "install",
+                            "nmap",
+                            "--non-interactive"
+                        ]
+                else:
+                    raise CalledProcessError
+        except CalledProcessError as err:
+            if os == "windows":
+                raise SystemExit(
+                    "Couldn't install nmap! (Windows)"
+                ) from err
+            elif os == "darwin":
+                raise SystemExit(
+                    "Couldn't install nmap! (Mac)"
+                ) from err
 
-        except CalledProcessError:
-            _distro_ = input(
-                (
-                    "Cannot recognize the needed package manager for your "
-                    f"system that seems to be running in: {distro_} and "
-                    f"{sys_platform}, {platform()}, kindly select the correct"
-                    " package manager below to proceed to the installation, else,"
-                    " select, n.\n\t0 Abort installation\n\t1 apt-get\n\t2 dnf\n\t3"
-                    " yum\n\t4 pacman\n\t5 zypper.\nSelect option [0-5] >"
-                )
-            )
-            match _distro_:
+            match input(
+                    (
+                        "Cannot recognize the needed package manager for "
+                        f"your system that seems to be running in: {distro_}"
+                        f" and {os}, kindly select the correct package manager"
+                        " below to proceed to the installation, else, select, "
+                        "n.\n\t0 Abort installation\n\t1 apt-get\n\t2 dnf\n\t3"
+                        " yum\n\t4 pacman\n\t5 zypper.\nSelect option [0-5] >"
+                    )
+                ):
                 case 1:
                     distro_ = "ubuntu"
                 case 2:
@@ -680,41 +692,7 @@ def install_nmap_linux(log) -> None: #! fix this shit
                     log.logger("error", "Couldn't install nmap (Linux)")
             continue
         else:
-            break
-
-def install_nmap_windows(log) -> None:
-    try:
-        check_call(
-            [
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "winget",
-                "install",
-                "nmap",
-                "--silent",
-            ],
-            stderr=DEVNULL,
-        )
-        log.logger(
-            "warning", "Nmap is installed but shell restart is required."
-        )
-        raise SystemExit
-    except CalledProcessError as err:
-        raise SystemExit("Couldn't install nmap! (Windows)") from err
-
-
-def install_nmap_mac(log) -> None:
-    try:
-        check_call(
-            [
-                "/usr/bin/sudo",
-                "brew",
-                "install",
-                "nmap"
-            ],
-            stderr=DEVNULL
-        )
-    except CalledProcessError:
-        log.logger("error", "Couldn't install nmap! (Mac)")
+            check_call(cmd, stderr=DEVNULL)
 
 
 def check_nmap(log) -> None:
