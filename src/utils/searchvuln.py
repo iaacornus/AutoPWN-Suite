@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from textwrap import wrap
 
-from modules.logger import banner
-from modules.nist_search import searchCVE
-from modules.utils import CheckConnection, get_terminal_width
-from rich.progress_bar import ProgressBar
+from src.utils.logger import banner
+from src.utils.nist_search import searchCVE
+from src.utils.utils import CheckConnection, get_terminal_width
 
 
 @dataclass
@@ -61,8 +60,10 @@ def SearchKeyword(keyword: str, log, apiKey=None) -> list:
     try:
         ApiResponseCVE = searchCVE(keyword, log, apiKey)
     except KeyboardInterrupt:
-        log.logger("warning", f"Skipped vulnerability detection for {keyword}")
-    except Exception as e:
+        log.logger(
+            "warning", f"Skipped vulnerability detection for {keyword}"
+        )
+    except Exception as e: #! fix this stupid exception
         log.logger("error", e)
     else:
         return ApiResponseCVE
@@ -70,7 +71,13 @@ def SearchKeyword(keyword: str, log, apiKey=None) -> list:
     return []
 
 
-def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
+def SearchSploits(
+        HostArray: list,
+        log,
+        console,
+        console2,
+        apiKey=None
+    ) -> list:
     VulnsArray = []
     target = str(HostArray[0][0])
     term_width = get_terminal_width()
@@ -81,16 +88,23 @@ def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
     keywords = GenerateKeywords(HostArray)
 
     if len(keywords) == 0:
-        log.logger("warning", f"Insufficient information for {target}")
+        log.logger(
+            "warning", f"Insufficient information for {target}"
+        )
         return []
 
     log.logger(
-        "info", f"Searching vulnerability database for {len(keywords)} keyword(s) ..."
+        "info",
+        (
+            "Searching vulnerability database "
+            f"for {len(keywords)} keyword(s) ..."
+        )
     )
 
     printed_banner = False
     with console2.status(
-        "[white]Searching vulnerabilities ...[/white]", spinner="bouncingBar"
+        "[white]Searching vulnerabilities ...[/white]",
+        spinner="bouncingBar"
     ) as status:
         for keyword in keywords:
             status.start()
@@ -104,7 +118,11 @@ def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
                 continue
 
             if not printed_banner:
-                banner(f"Possible vulnerabilities for {target}", "red", console)
+                banner(
+                    f"Possible vulnerabilities for {target}",
+                    "red",
+                    console
+                )
                 printed_banner = True
 
             console.print(f"┌─ [yellow][ {keyword} ][/yellow]")
@@ -115,13 +133,15 @@ def SearchSploits(HostArray: list, log, console, console2, apiKey=None) -> list:
                 console.print(f"│\n├─────┤ [red]{CVE.CVEID}[/red]\n│")
 
                 wrapped_description = wrap(CVE.description, term_width - 50)
-                console.print(f"│\t\t[cyan]Description: [/cyan]")
+                console.print("│\t\t[cyan]Description: [/cyan]")
                 for line in wrapped_description:
                     console.print(f"│\t\t\t{line}")
                 console.print(
-                    f"│\t\t[cyan]Severity: [/cyan]{CVE.severity} - {CVE.severity_score}\n"
-                    + f"│\t\t[cyan]Exploitability: [/cyan] {CVE.exploitability}\n"
-                    + f"│\t\t[cyan]Details: [/cyan] {CVE.details_url}"
+                    "│\t\t[cyan]Severity: [/cyan]"
+                    f"{CVE.severity} - {CVE.severity_score}\n"
+                    "│\t\t[cyan]Exploitability: [/cyan]"
+                    f"{CVE.exploitability}\n"
+                    f"│\t\t[cyan]Details: [/cyan] {CVE.details_url}"
                 )
 
             VulnObject = VulnerableSoftware(title=keyword, CVEs=CVEs)

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from enum import Enum
 from multiprocessing import Process
 from time import sleep
 
@@ -7,8 +6,8 @@ from nmap import PortScanner
 from rich import box
 from rich.table import Table
 
-from modules.logger import banner
-from modules.utils import GetIpAdress, ScanMode, ScanType, is_root
+from src.utils.logger import banner
+from src.utils.utils import GetIpAdress, ScanMode, ScanType, is_root
 
 
 @dataclass()
@@ -22,21 +21,20 @@ class TargetInfo:
     def colored(self) -> str:
 
         return (
-            f"[yellow]MAC Address :[/yellow] {self.mac}\n"
-            + f"[yellow]Vendor :[/yellow] {self.vendor}\n"
-            + f"[yellow]OS :[/yellow] {self.os}\n"
-            + f"[yellow]Accuracy :[/yellow] {self.os_accuracy}\n"
-            + f"[yellow]Type :[/yellow] {self.os_type[:20]}\n"
+            "[yellow]MAC Address: [/yellow] {self.mac}\n"
+            f"[yellow]Vendor: [/yellow] {self.vendor}\n"
+            f"[yellow]OS: [/yellow] {self.os}\n"
+            f"[yellow]Accuracy: [/yellow] {self.os_accuracy}\n"
+            f"[yellow]Type: [/yellow] {self.os_type[:20]}\n"
         )
 
     def __str__(self) -> str:
         return (
-            f"MAC Address : {self.mac}"
-            + f" Vendor : {self.vendor}\n"
-            + f"OS : {self.os}"
-            + f" Accuracy : {self.os_accuracy}"
-            + f" Type : {self.os_type}"
-            + "\n"
+            f"MAC Address: {self.mac}\n"
+            f"Vendor: {self.vendor}\n"
+            f"OS: {self.os}\n"
+            f"Accuracy: {self.os_accuracy}\n"
+            f"Type: {self.os_type}\n"
         )
 
 
@@ -46,7 +44,10 @@ def TestPing(target, mode=ScanMode.Normal) -> list:
     if isinstance(target, list):
         target = " ".join(target)
     if mode == ScanMode.Evade and is_root():
-        nm.scan(hosts=target, arguments="-sn -T 2 -f -g 53 --data-length 10")
+        nm.scan(
+            hosts=target,
+            arguments="-sn -T 2 -f -g 53 --data-length 10"
+        )
     else:
         nm.scan(hosts=target, arguments="-sn")
 
@@ -59,7 +60,10 @@ def TestArp(target, mode=ScanMode.Normal) -> list:
     if isinstance(target, list):
         target = " ".join(target)
     if mode == ScanMode.Evade:
-        nm.scan(hosts=target, arguments="-sn -PR -T 2 -f -g 53 --data-length 10")
+        nm.scan(
+            hosts=target,
+            arguments="-sn -PR -T 2 -f -g 53 --data-length 10"
+        )
     else:
         nm.scan(hosts=target, arguments="-sn -PR")
 
@@ -131,9 +135,9 @@ def PortScan(
                         str(scanspeed),
                         customflags,
                     ]
-                ),
+                )
             )
-    except Exception as e:
+    except Exception as e: #! fix this stupid exception
         raise SystemExit(f"Error: {e}")
     else:
         return nm
@@ -147,13 +151,19 @@ def CreateNoise(target) -> None:
                 nm.scan(hosts=target, arguments="-A -T 5 -D RND:10")
             else:
                 nm.scan(hosts=target, arguments="-A -T 5")
-        except KeyboardInterrupt:
-            raise SystemExit("Ctr+C, aborting.")
+        except KeyboardInterrupt as err:
+            raise SystemExit("Ctr+C, aborting.") from err
         else:
             break
 
 
-def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) -> None:
+def NoiseScan(
+        target,
+        log,
+        console,
+        scantype=ScanType.ARP,
+        noisetimeout=None
+    ) -> None:
     banner("Creating noise...", "green", console)
 
     Uphosts = TestPing(target)
@@ -165,7 +175,9 @@ def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) ->
         with console.status("Creating noise ...", spinner="line"):
             NoisyProcesses = []
             for host in Uphosts:
-                log.logger("info", f"Started creating noise on {host}...")
+                log.logger(
+                    "info", f"Started creating noise on {host}..."
+                )
                 P = Process(target=CreateNoise, args=(host,))
                 NoisyProcesses.append(P)
                 P.start()
@@ -179,20 +191,34 @@ def NoiseScan(target, log, console, scantype=ScanType.ARP, noisetimeout=None) ->
         for P in NoisyProcesses:
             P.terminate()
         raise SystemExit
-    except KeyboardInterrupt:
-        log.logger("error", "Noise scan interrupted!")
-        raise SystemExit
+    except KeyboardInterrupt as err:
+        raise SystemExit("Noise scan interrupted!") from err
 
 
-def DiscoverHosts(target, console, scantype=ScanType.ARP, mode=ScanMode.Normal) -> list:
+def DiscoverHosts(
+        target,
+        console,
+        scantype=ScanType.ARP,
+        mode=ScanMode.Normal
+    ) -> list:
     if isinstance(target, list):
         banner(
-            f"Scanning {len(target)} target(s) using {scantype.name} scan ...",
+            (
+                f"Scanning {len(target)} target(s)"
+                f" using {scantype.name} scan ..."
+            ),
             "green",
-            console,
+            console
         )
     else:
-        banner(f"Scanning {target} using {scantype.name} scan ...", "green", console)
+        banner(
+            (
+                f"Scanning {target} using"
+                f"{scantype.name} scan ..."
+            ),
+            "green",
+            console
+        )
 
     if scantype == ScanType.ARP:
         OnlineHosts = TestArp(target, mode)
@@ -275,18 +301,26 @@ def AnalyseScanResults(nm, log, console, target=None) -> list:
     CurrentTargetInfo = InitHostInfo(nm[target])
 
     if is_root():
-        if nm[target]["status"]["reason"] in ["localhost-response", "user-set"]:
+        if (
+                nm[target]["status"]["reason"] in
+                ["localhost-response", "user-set"]
+            ):
             log.logger("info", f"Target {target} seems to be us.")
     elif GetIpAdress() == target:
         log.logger("info", f"Target {target} seems to be us.")
 
     if len(nm[target].all_tcp()) == 0:
-        log.logger("warning", f"Target {target} seems to have no open ports.")
+        log.logger(
+            "warning", f"Target {target} seems to have no open ports."
+        )
         return HostArray
 
     banner(f"Portscan results for {target}", "green", console)
 
-    if not CurrentTargetInfo.mac == "Unknown" and not CurrentTargetInfo.os == "Unknown":
+    if (
+        not CurrentTargetInfo.mac == "Unknown"
+        and not CurrentTargetInfo.os == "Unknown"
+        ):
         console.print(CurrentTargetInfo.colored(), justify="center")
 
     table = Table(box=box.MINIMAL)
@@ -298,11 +332,31 @@ def AnalyseScanResults(nm, log, console, target=None) -> list:
     table.add_column("Version", style="purple")
 
     for port in nm[target]["tcp"].keys():
-        state, service, product, version = InitPortInfo(nm[target]["tcp"][port])
-        table.add_row(str(port), state, service, product, version)
+        (
+            state,
+            service,
+            product,
+            version
+        ) = InitPortInfo(nm[target]["tcp"][port])
+        table.add_row(
+            str(port),
+            state,
+            service,
+            product,
+            version
+        )
 
         if state == "open":
-            HostArray.insert(len(HostArray), [target, port, service, product, version])
+            HostArray.insert(
+                len(HostArray),
+                [
+                    target,
+                    port,
+                    service,
+                    product,
+                    version
+                ]
+            )
 
     console.print(table, justify="center")
 

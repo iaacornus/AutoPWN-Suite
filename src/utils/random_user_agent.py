@@ -1,9 +1,10 @@
 from json import loads
 from os.path import dirname
 from random import choice, randint
+from typing import Generator
 
 
-def random_user_agent(log) -> str:
+def random_user_agent() -> Generator[str]:
     """
     * Generate random user agent for headers.
 
@@ -23,9 +24,8 @@ def random_user_agent(log) -> str:
                     user_agent_: dict[str, str] = loads(user_agent_)
 
                     user_agents.append(user_agent_)
-        except FileNotFoundError:
-            log.logger("error", "User agent database not found.")
-            raise SystemExit
+        except FileNotFoundError as err:
+            raise SystemExit("User agent database not found.") from err
         else:
             floor_: int = randint(1, 450)
             top_: int = randint(floor_ + 1, floor_ * 2)

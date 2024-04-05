@@ -42,16 +42,35 @@ def FindVars(vuln: dict) -> tuple:
         metrics_types = list(metrics.keys())
         metrics_types.sort(reverse=True)
         for score_type in metrics_types:
+            # TODO: use or
             if exploitability == 0.0:
-                exploitability = metrics[score_type][0].get("exploitabilityScore", 0.0)
+                exploitability = (
+                        metrics[score_type][0]
+                            .get("exploitabilityScore", 0.0)
+                    )
             if severity_score == 0.0:
-                severity_score = metrics[score_type][0].get("cvssData", {}).get("baseScore", 0.0)
+                severity_score = (
+                        metrics[score_type][0]
+                            .get("cvssData", {})
+                            .get("baseScore", 0.0)
+                    )
             if severity == "UNKNOWN":
-                severity = metrics[score_type][0].get("cvssData", {}).get("baseSeverity", "UNKNOWN")
+                severity = (
+                        metrics[score_type][0]
+                            .get("cvssData", {})
+                            .get("baseSeverity", "UNKNOWN")
+                    )
 
     details_url = "https://nvd.nist.gov/vuln/detail/" + CVE_ID
 
-    return CVE_ID, description, severity, severity_score, details_url, exploitability
+    return (
+        CVE_ID,
+        description,
+        severity,
+        severity_score,
+        details_url,
+        exploitability
+    )
 
 
 def searchCVE(keyword: str, log, apiKey=None) -> list[Vulnerability]:
@@ -68,17 +87,19 @@ def searchCVE(keyword: str, log, apiKey=None) -> list[Vulnerability]:
     if keyword in cache:
         return cache[keyword]
 
-    for tries in range(3):
+    for _ in range(3):
         try:
             sleep(sleep_time)
             response = get(url, params=parameters, headers=headers)
             data = response.json()
-        except Exception as e:
+        except Exception:
             if response.status_code == 403:
                 log.logger(
                     "error",
-                    "Requests are being rate limited by NIST API,"
-                    + " please get a NIST API key to prevent this.",
+                    (
+                        "Requests are being rate limited by NIST API,"
+                        " please get a NIST API key to prevent this."
+                    )
                 )
                 sleep(sleep_time)
         else:
