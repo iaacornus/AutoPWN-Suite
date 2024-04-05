@@ -658,7 +658,10 @@ def install_nmap(log) -> None: #! fix this shit
                         ]
                 else:
                     raise CalledProcessError
+            else:
+                raise SystemExit(
                     "Unknown OS, installation not supported."
+                )
         except CalledProcessError as err:
             if os == "windows":
                 raise SystemExit(
@@ -696,39 +699,24 @@ def install_nmap(log) -> None: #! fix this shit
             check_call(cmd, stderr=DEVNULL)
 
 
-def check_nmap(log) -> None:
+def check_nmap(assume_yes: bool, log) -> None:
     try:
         check_call(
             ["nmap", "-h"],
             stdout=DEVNULL,
             stderr=DEVNULL
         )
-    except (CalledProcessError, FileNotFoundError):
+    except CalledProcessError as err:
         log.logger("warning", "Nmap is not installed.")
 
-        auto_install = True
-
-        if not DontAskForConfirmation:
-            auto_install = (
-                input(
-                    f"Install Nmap on your system ({system()})? "
-                ).lower() != "n"
-            )
-
-        if not auto_install:
-            raise SystemExit("Denied permission to install Nmap.")
-
-        match system().lower():
-            case "linux":
-                install_nmap_linux(log)
-            case "windows":
-                install_nmap_windows(log)
-            case "darwin":
-                install_nmap_mac(log)
-            case _:
-                raise SystemExit(
-                        "Unknown OS! Auto installation not supported!"
-                    )
+        if not assume_yes:
+            if input(
+                    f"Install Nmap on your system ({system()}) [y/N]? "
+                ).lower() == "n":
+                raise PermissionError from err
+        install_nmap(log)
+    except PermissionError as err:
+        raise SystemExit("Denied permission to install Nmap.") from err
 
 
 def ParamPrint( #! fix this shit
