@@ -13,9 +13,8 @@ from sys import platform as sys_platform
 from requests import get
 from rich.text import Text
 
+from src.data.dataclass import ScanMode, ScanType
 from src.utils.report import ReportMail, ReportType
-
-
 
 
 def cli():
